@@ -18,7 +18,7 @@ A browser-based script to batch download episodes from KimCartoon.si.
 
 ```javascript
 $.getScript(
-  "https://rawgit.com/Dhairya3391/kimcartoon-downloader/master/kimcartoon.js"
+  "https://cdn.jsdelivr.net/gh/Dhairya3391/kimcartoon-downloader@main/kimcartoon.js"
 );
 ```
 
