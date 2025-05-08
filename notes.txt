@@ -1,0 +1,42 @@
+this is for this output below
+
+Title: Ben 10 (2016)
+Link: https://kimcartoon.si/Cartoon/Ben-10-2016.72362/
+
+ggrep -zoPa '<h2\s+class="title">.*?</h2>|<a class="thumb"[^>]*href="[^"]*"' test.html | ggrep -aoP '(class="title">.*?</h2>|href="[^"]*")' | sed -E 's/<[^>]*>//g; s/href="//g; s/class="title">//g; s/"//g' | awk '{if(NR%2==1){link=$0}else{print "\nTitle: " $0 "\nLink: " link}}'
+
+this is for this output below
+
+Season 01:
+Episode 01: Fame
+Link: https://kimcartoon.si/Cartoon/Ben-10-Ultimate-Alien.79888/Season-01-Episode-01-Fame?id=1801
+
+ggrep -oP 'href="[^"]*Season-\d+-Episode[^"]*"[^>]*>[^<]*' test.html | sort -t'-' -k2,2 -k4,4n | awk '
+BEGIN { prev_season = ""; prev_ep = ""; }
+{
+    link=substr($0, index($0, "href=\"") + 6);
+    link=substr(link, 1, index(link, "\"") - 1);
+    season=substr($0, index($0, "Season-") + 7);
+    season=substr(season, 1, index(season, "-") - 1);
+    title=substr($0, index($0, "\">") + 2);
+    sub(/.*Episode [0-9]+[& ]*[0-9]* *- */, "", title);
+
+    episode_num=substr(link, index(link, "Episode-") + 8);
+    episode_num=substr(episode_num, 1, index(episode_num, "?") - 1);
+    if(index(episode_num, "19-20") > 0 || index(episode_num, "19-120") > 0) {
+        episode_num="19 & 20";
+    }
+    gsub(/-/, " ", episode_num);
+    episode_num=sprintf("%02d", substr(episode_num, 1, 2));
+
+    curr_entry = season episode_num;
+    if(curr_entry != prev_entry) {
+        if(season != prev_season) {
+            if(prev_season != "") print "";
+            print "Season " season ":";
+            prev_season = season;
+        }
+        printf "Episode %s: %s\nLink: %s\n\n", episode_num, title, link;
+        prev_entry = curr_entry;
+    }
+}'
