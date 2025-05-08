@@ -43,3 +43,4 @@ $.getScript(
 ## Note
 
 This script is for personal use only. Please respect the website's terms of service and copyright laws.
+# kimcartoon-downloader
